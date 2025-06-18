@@ -35,7 +35,7 @@ To start a Sonarr container:
 
 ```bash
 docker run -d \
-  --name prowlarr \
+  --name sonarr \
   -p 8989:8989 \
   sonarr-docker
 ```
