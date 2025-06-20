@@ -25,6 +25,9 @@ RUN useradd -m sonarr && \
 
 COPY --from=builder --chown=sonarr:sonarr /tmp/sonarr_extracted /opt/Sonarr
 
+COPY scripts/ /scripts/
+RUN chmod +x /scripts/*.sh
+
 USER sonarr
 WORKDIR /opt/Sonarr
 ENTRYPOINT ["/opt/Sonarr/Sonarr", "-nobrowser", "-data=/config/"]
