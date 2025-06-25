@@ -75,7 +75,7 @@ jobs:
           VERSION_TAG="${{ steps.extract_version.outputs.version }}"
 
           echo "Checking for existing image: ${IMAGE_NAME}:${VERSION_TAG}"
-          PACKAGE_VERSIONS=$(gh package view "${IMAGE_NAME}" --json versions --jq '.versions[].names[]' 2>/dev/null || echo "")
+          PACKAGE_VERSIONS=$(gh api /users/spoland/packages/container/sonarr-docker/versions | jq -r '.[].metadata.container.tags[]')
 
           if echo "$PACKAGE_VERSIONS" | grep -q "^${VERSION_TAG}$"; then
             echo "Image ${IMAGE_NAME}:${VERSION_TAG} already exists in GitHub Container Registry."
