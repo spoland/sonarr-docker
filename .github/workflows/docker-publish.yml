@@ -71,7 +71,7 @@ jobs:
         # This step should only run if we successfully extracted a version
         if: ${{ steps.extract_version.outputs.version }}
         run: |
-          IMAGE_NAME="spoland/sonarr"
+          IMAGE_NAME="spoland/sonarr-docker"
           VERSION_TAG="${{ steps.extract_version.outputs.version }}"
 
           echo "Checking for existing image: ${IMAGE_NAME}:${VERSION_TAG}"
