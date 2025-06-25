@@ -79,8 +79,8 @@ jobs:
 
           if echo "$PACKAGE_VERSIONS" | grep -q "^${VERSION_TAG}$"; then
             echo "Image ${IMAGE_NAME}:${VERSION_TAG} already exists in GitHub Container Registry."
-            echo "Aborting pipeline run."
-            exit 1 # Abort the workflow
+            echo "Skipping pipeline run."
+            gh run cancel ${{ github.run_id }} # Abort the workflow
           else
             echo "Image ${IMAGE_NAME}:${VERSION_TAG} does not exist. Proceeding with build."
           fi
