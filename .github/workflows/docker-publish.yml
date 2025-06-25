@@ -66,6 +66,28 @@ jobs:
           echo "SONARR_VERSION=$VERSION" >> $GITHUB_ENV
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
+      - name: Check if image tag already exists in GHCR
+        id: check_tag_exists
+        # This step should only run if we successfully extracted a version
+        if: ${{ steps.extract_version.outputs.version }}
+        run: |
+          IMAGE_NAME="spoland/sonarr"
+          VERSION_TAG="${{ steps.extract_version.outputs.version }}"
+
+          echo "Checking for existing image: ${IMAGE_NAME}:${VERSION_TAG}"
+          PACKAGE_VERSIONS=$(gh package view "${IMAGE_NAME}" --json versions --jq '.versions[].names[]' 2>/dev/null || echo "")
+
+          if echo "$PACKAGE_VERSIONS" | grep -q "^${VERSION_TAG}$"; then
+            echo "Image ${IMAGE_NAME}:${VERSION_TAG} already exists in GitHub Container Registry."
+            echo "Aborting pipeline run."
+            exit 1 # Abort the workflow
+          else
+            echo "Image ${IMAGE_NAME}:${VERSION_TAG} does not exist. Proceeding with build."
+          fi
+        env:
+          # This ensures gh CLI is authenticated to check packages
+          GH_TOKEN: ${{ github.token }}
+
       # Extract metadata (tags, labels) for Docker
       # https://github.com/docker/metadata-action
       - name: Extract Docker metadata
